@@ -1,0 +1,138 @@
+<%- include('partials/header', { title: 'Dashboard' }) %>
+
+<main class="dash-main">
+  <div class="dash-header">
+    <div>
+      <h1>My Links</h1>
+      <p class="dash-sub">Manage and track all your short URLs</p>
+    </div>
+    <button class="btn btn-primary" onclick="toggleModal(true)">+ Shorten URL</button>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num"><%= urls.length %></div>
+      <div class="stat-label">Total Links</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num"><%= urls.reduce((s,u) => s + u.clicks.length, 0) %></div>
+      <div class="stat-label">Total Clicks</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num"><%= urls.filter(u => u.isActive).length %></div>
+      <div class="stat-label">Active Links</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">
+        <% const total = urls.reduce((s,u) => s + u.clicks.length, 0);
+           const avg = urls.length ? (total / urls.length).toFixed(1) : 0; %>
+        <%= avg %>
+      </div>
+      <div class="stat-label">Avg Clicks/Link</div>
+    </div>
+  </div>
+
+  <!-- URL Table -->
+  <% if (urls.length === 0) { %>
+    <div class="empty-state">
+      <div class="empty-icon">🔗</div>
+      <h3>No links yet</h3>
+      <p>Shorten your first URL to get started!</p>
+      <button class="btn btn-primary" onclick="toggleModal(true)">+ Create First Link</button>
+    </div>
+  <% } else { %>
+    <div class="url-table-wrap">
+      <table class="url-table">
+        <thead>
+          <tr>
+            <th>Original URL</th>
+            <th>Short Link</th>
+            <th>Clicks</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% urls.forEach(url => { %>
+            <tr class="<%= url.isActive ? '' : 'inactive-row' %>">
+              <td class="url-orig">
+                <a href="<%= url.originalUrl %>" target="_blank" title="<%= url.originalUrl %>">
+                  <%= url.originalUrl.length > 45 ? url.originalUrl.substring(0,45) + '...' : url.originalUrl %>
+                </a>
+              </td>
+              <td class="url-short">
+                <div class="short-link-wrap">
+                  <a href="<%= baseUrl %>/<%= url.customAlias || url.shortCode %>" target="_blank">
+                    <%= baseUrl.replace('http://','').replace('https://','') %>/<%= url.customAlias || url.shortCode %>
+                  </a>
+                  <button class="copy-btn" onclick="copyUrl('<%= baseUrl %>/<%= url.customAlias || url.shortCode %>')">📋</button>
+                </div>
+              </td>
+              <td class="url-clicks">
+                <span class="click-badge"><%= url.clicks.length %></span>
+              </td>
+              <td>
+                <span class="status-badge <%= url.isActive ? 'active' : 'inactive' %>">
+                  <%= url.isActive ? 'Active' : 'Inactive' %>
+                </span>
+              </td>
+              <td class="url-date">
+                <%= new Date(url.createdAt).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'2-digit'}) %>
+              </td>
+              <td class="url-actions">
+                <a href="/url/analytics/<%= url._id %>" class="btn btn-sm btn-outline">📊 Stats</a>
+                <form action="/url/toggle/<%= url._id %>" method="POST" style="display:inline">
+                  <button class="btn btn-sm btn-outline"><%= url.isActive ? '⏸' : '▶' %></button>
+                </form>
+                <form action="/url/delete/<%= url._id %>" method="POST" style="display:inline"
+                      onsubmit="return confirm('Delete this link?')">
+                  <button class="btn btn-sm btn-danger">🗑</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</main>
+
+<!-- ── SHORTEN MODAL ────────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal" onclick="toggleModal(false)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <h3>🔗 Shorten a URL</h3>
+      <button class="modal-close" onclick="toggleModal(false)">✕</button>
+    </div>
+    <form action="/url/shorten" method="POST" class="shorten-form">
+      <div class="form-group">
+        <label>Original URL <span class="req">*</span></label>
+        <input type="text" name="originalUrl" placeholder="https://example.com/your-long-url" required/>
+      </div>
+      <div class="form-group">
+        <label>Custom Alias <span class="opt">(optional)</span></label>
+        <div class="alias-wrap">
+          <span class="alias-prefix"><%= (process.env.BASE_URL || 'http://localhost:3000').replace('http://','').replace('https://','') %>/</span>
+          <input type="text" name="customAlias" placeholder="my-brand"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Link Expiry</label>
+        <select name="expiresIn">
+          <option value="never">Never expires</option>
+          <option value="1">1 Day</option>
+          <option value="7">7 Days</option>
+          <option value="30">30 Days</option>
+        </select>
+      </div>
+      <div class="modal-btns">
+        <button type="button" class="btn btn-outline" onclick="toggleModal(false)">Cancel</button>
+        <button type="submit" class="btn btn-primary">Shorten →</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

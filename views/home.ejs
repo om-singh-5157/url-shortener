@@ -1,0 +1,67 @@
+<%- include('partials/header', { title: 'Home' }) %>
+
+<main>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🔗 Free URL Shortener</div>
+      <h1>Shorten Links.<br/><span>Track Every Click.</span></h1>
+      <p class="hero-sub">Create short, memorable links with powerful analytics. Track clicks, devices, browsers and more — all in one dashboard.</p>
+      <div class="hero-btns">
+        <a href="/auth/register" class="btn btn-primary btn-lg">Get Started Free</a>
+        <a href="/auth/login"    class="btn btn-outline btn-lg">Login</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="mock-card">
+        <div class="mock-label">Original URL</div>
+        <div class="mock-url long">https://www.example.com/some/very/long/url/that/nobody/remembers</div>
+        <div class="mock-arrow">↓</div>
+        <div class="mock-label">Short URL</div>
+        <div class="mock-url short">snaplink.io/<span>xK9mP2</span></div>
+        <div class="mock-stats">
+          <span>🖱️ 1,284 clicks</span>
+          <span>📱 Mobile: 62%</span>
+          <span>🌍 12 countries</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Everything you need</h2>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <h3>Instant Shortening</h3>
+        <p>Generate short links in milliseconds with custom aliases support.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Deep Analytics</h3>
+        <p>Track clicks by browser, OS, device type, and time. Beautiful charts.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⏰</div>
+        <h3>Link Expiry</h3>
+        <p>Set links to expire after 1, 7, or 30 days automatically.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>JWT-based auth, bcrypt passwords, all your links are private.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎯</div>
+        <h3>Custom Aliases</h3>
+        <p>Create branded links like snaplink.io/my-brand instead of random codes.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <h3>One-click Copy</h3>
+        <p>Copy your short URL instantly to clipboard with one click.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
